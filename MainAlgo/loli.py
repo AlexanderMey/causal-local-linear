@@ -16,8 +16,9 @@ def gauss(x,y,B,l):
     S_ini=[]
     suppsize=d
     for ind in subsets:
-        if len(ind)>suppsize:
-            return [set(S_ini[k]) for k in range(len(S_ini))]
+        ## In case we want early stopping for more power:
+        # if len(ind)>suppsize:
+        #     return [set(S_ini[k]) for k in range(len(S_ini))]
         ind=np.array(ind)
         Res=np.zeros(E)
         T_mc=np.zeros((E,B))
