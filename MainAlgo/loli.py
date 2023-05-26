@@ -6,9 +6,8 @@ import itertools
 from heapq import nlargest
 
 
-def gauss(x,y,B,l):
+def gauss(x,y,B=100,l=1,alpha=0.1):
     E=len(x)
-    alpha=0.1
     n,d=x[0].shape
     temp=[list(itertools.combinations(range(d), k)) for k in range(0,d)]
     subsets = [item for sublist in temp for item in sublist]
@@ -36,7 +35,7 @@ def gauss(x,y,B,l):
         T_b=np.sort(T_mc,kind='mergesort',axis=0)
         T_data=np.sort(Res,kind='mergesort')
         pval=1/B*np.sum(np.sum(T_data[:l])*np.sum(T_b[-l:,:],axis=0)>np.sum(T_b[:l,:],axis=0)*np.sum(T_data[-l:]))
-        if pval>0.1:
+        if pval>alpha:
             suppsize=len(ind)
             S_ini.append(ind)
     return [set(S_ini[k]) for k in range(len(S_ini))]
