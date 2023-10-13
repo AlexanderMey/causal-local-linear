@@ -6,9 +6,7 @@ import itertools
 from heapq import nlargest
 
 
-def gauss(x,y,B=100,l=1,alpha=0.1,lam=0,rs=False,intercept=True):
-    if rs>0:
-        np.random.seed(rs)
+def gauss(x,y,B=100,l=1,alpha=0.1,lam=0):
     E=len(x)
     n,d=x[0].shape
     temp=[list(itertools.combinations(range(d), k)) for k in range(0,d+1)]
@@ -30,16 +28,12 @@ def gauss(x,y,B=100,l=1,alpha=0.1,lam=0,rs=False,intercept=True):
                 Res[i]=np.sum((y[i]-np.mean(y[i]))**2)
             else:
                 xtemp=copy.copy(x[i][:,ind])
-                if intercept:
-                    xtemp=np.concatenate((xtemp,np.ones((n,1))),axis=1)
-                    m=1+len(ind)
-                else:
-                    m=len(ind)
-                beta_hat=np.linalg.inv(xtemp.T@xtemp+lam*np.eye(m))@(xtemp.T)@y[i]
+                xtemp=np.concatenate((xtemp,np.ones((n,1))),axis=1)
+                beta_hat=np.linalg.inv(xtemp.T@xtemp+lam*np.eye(1+len(ind)))@(xtemp.T)@y[i]
                 Res[i]=np.sum((y[i]-xtemp@beta_hat)**2)
                 if (n,len(ind)) not in Simulations:
-                    Simulations[(n,len(ind))]=(np.random.chisquare(n-m,B))
-                T_mc[i,:]=(np.random.chisquare(n-m,B))
+                    Simulations[(n,len(ind))]=(np.random.chisquare(n-len(ind)-1,B))
+                T_mc[i,:]=(np.random.chisquare(n-len(ind)-1,B))
         if l==1:
             pval=1/B*np.sum(np.min(Res)*np.max(T_mc,axis=0)>np.max(Res)*np.min(T_mc,axis=0))
         else:
